@@ -42,14 +42,14 @@ public class Percolation
         BOTTOM = size + 1;
 
         // Connect TOP with the first row
-        for(int i = convertIndex(1, 1); i < convertIndex(1, n_); ++i) {
-            uf_.union(i, TOP);
-        }
+        //for(int i = convertIndex(1, 1); i <= convertIndex(1, n_); ++i) {
+        //    uf_.union(i, TOP);
+       // }
 
         // Connect BOTTOM with the last row
-        for(int i = convertIndex(n_, 1); i < convertIndex(n_, n_); ++i) {
-            uf_.union(i, BOTTOM);
-        }
+        //for(int i = convertIndex(n_, 1); i <= convertIndex(n_, n_); ++i) {
+        //    uf_.union(i, BOTTOM);
+        //}
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -97,6 +97,9 @@ public class Percolation
                 if(DEBUG) System.out.println("union(" + index + ", " + newIndex + ") - up");
             }
         }
+        else {
+            uf_.union(index, TOP);
+        }
         
         // Connect to down if open
         if((row + 1) <= n_) {
@@ -105,6 +108,9 @@ public class Percolation
                 uf_.union(index, newIndex);
                 if(DEBUG) System.out.println("union(" + index + ", " + newIndex + ") - down");
             }
+        }
+        else {
+            uf_.union(index, BOTTOM);
         }
         
 
@@ -198,8 +204,16 @@ public class Percolation
     public static void main(String[] args)
     {
         System.out.println("Creating Percolation object");
-        Percolation perc = new Percolation(10);
+        Percolation perc = new Percolation(1);
         
+        perc.open(1, 1);
+        if(perc.percolates()) System.out.println("PERCOLATES");
+        else System.out.println("DOESN'T PERCOLATE");
+
+        //if(perc.percolates()) System.out.println("NO");
+        //else System.out.println("YES");
+
+        /*
         for(int i = 1; i <= 10; ++i) {
             System.out.println("Opening (" + i + ", 1)");
             perc.open(i, 1);
@@ -210,6 +224,7 @@ public class Percolation
                 System.out.println(" Not Connected");
             }
         }
+        */
         
     }
 }
