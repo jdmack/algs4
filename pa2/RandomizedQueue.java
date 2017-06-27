@@ -38,7 +38,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         }
 
         if(occupancy_ == arraySize_) {
-            resize();
+            resize(arraySize_ * 2);
         }
 
         if(occupancy_ != 0) {
@@ -49,6 +49,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         array_[tail_] = item;
 
         ++occupancy_;
+        //printArray();
  
     }
 
@@ -66,12 +67,13 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             head_ = 0;
         }
 
-        if(occupancy_ <= (arraySize_ / 4)) {
-            resize();
-        }
-
         --occupancy_;
 
+        if(occupancy_ <= (arraySize_ / 4)) {
+            resize(arraySize_ / 2);
+        }
+
+        //printArray();
         return item;
     }
 
@@ -85,9 +87,28 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         return new RandomizedQueueIterator();
     }
 
-    private void resize()
+    private void resize(int newSize)
     {
+        if(newSize < ARRAY_MIN_SIZE) return;
+        System.out.println("occupancy: " + occupancy_);
+        Item[] newArray = (Item[]) new Object[newSize];
 
+        int current = head_;
+        for(int i = 0; i < occupancy_; ++i) {
+            newArray[i] = array_[current];
+            array_[current] = null;
+            if(++current >= arraySize_) current = 0;
+        }
+        head_ = 0;
+        tail_ = occupancy_ - 1;
+        array_ = newArray;
+        System.out.println("resizing from " + arraySize_ + " to " + newSize);
+        arraySize_ = newSize;
+    }
+
+    private void printArray()
+    {
+        System.out.println("head: " + head_ + ", tail: " + tail_ + " array: " + Arrays.toString(array_));
     }
 
     private class RandomizedQueueIterator implements Iterator<Item>
@@ -101,13 +122,12 @@ public class RandomizedQueue<Item> implements Iterable<Item>
             indices_ = new int[occupancy_]; 
             
             int current = head_;
-            for(int i = 0; i < indices_.length; ++i) {
+            for(int i = 0; i < occupancy_; ++i) {
                 indices_[i] = current;
-                if(++current >= occupancy_) {
-                    current = 0;
-                }
+                if(++current >= arraySize_) current = 0;
             }
-            //StdRandom.shuffle(indices_);
+            StdRandom.shuffle(indices_);
+            //System.err.println("(indices: " + Arrays.toString(indices_) + ")");
 
         }
 
@@ -129,35 +149,31 @@ public class RandomizedQueue<Item> implements Iterable<Item>
 
     public static void main(String[] args)
     {
-        RandomizedQueue<String> q = new RandomizedQueue<String>();        
+        RandomizedQueue<Integer> q = new RandomizedQueue<Integer>();        
 
-        print(q);
-        q.enqueue("A");
-        print(q);
-        q.enqueue("B");
-        print(q);
-        q.enqueue("C");
-        print(q);
-        q.enqueue("D");
-        print(q);
-        q.enqueue("E");
-        print(q);
-        q.enqueue("F");
-        print(q);
-        q.enqueue("G");
-        print(q);
-        System.out.println("Removing: " + q.dequeue());
-        print(q);
-        q.enqueue("H");
+        for(int j = 0; j < 3; ++j) {
+            for(int i = 0; i < 100; ++i) {
+                q.enqueue(i);
+            }
+
+            print(q);
+
+            for(int i = 0; i < 75; ++i) {
+                //System.out.println("Removing: " + q.dequeue());
+                q.dequeue();
+                print(q);
+            }
+        }
+
         print(q);
     }
 
-    public static void print(RandomizedQueue<String> q)
+    public static void print(RandomizedQueue<Integer> q)
     {   
-        Iterator<String> it = q.iterator();
+        Iterator<Integer> it = q.iterator();
 
         System.out.print("size: " + q.size() + " [ ");
-        for(String s: q) {
+        for(Integer s: q) {
             System.out.print("[" + s + "]");
         }
         System.out.println(" ]");
