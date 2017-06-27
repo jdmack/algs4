@@ -5,6 +5,7 @@ SOURCE = Deque.java \
 all: $(SOURCE)
 	-@echo Building Deque...
 	javac-algs4 -Xlint Deque.java
+	javac-algs4 -Xlint RandomizedQueue.java
 
 clean:
 	rm *.class
