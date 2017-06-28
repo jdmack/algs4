@@ -56,11 +56,15 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     public Item dequeue()
     {
         if(occupancy_ == 0) {
-
+            throw new NoSuchElementException();
         }
 
+        int randomIndex = StdRandom.uniform(occupancy_);
+        if((randomIndex += head_) >= arraySize_) randomIndex -= arraySize_;
 
-        Item item = array_[head_];
+
+        Item item = array_[randomIndex];
+        array_[randomIndex] = array_[head_];
         array_[head_] = null;
             
         if(++head_ >= arraySize_) {
@@ -79,7 +83,15 @@ public class RandomizedQueue<Item> implements Iterable<Item>
 
     public Item sample()
     {
-        return array_[0];
+        if(occupancy_ == 0) {
+            throw new NoSuchElementException();
+        }
+
+        int randomIndex = StdRandom.uniform(occupancy_);
+        if((randomIndex += head_) >= arraySize_) randomIndex -= arraySize_;
+
+
+        return array_[randomIndex];
     }
 
     public Iterator<Item> iterator()
@@ -90,7 +102,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
     private void resize(int newSize)
     {
         if(newSize < ARRAY_MIN_SIZE) return;
-        System.out.println("occupancy: " + occupancy_);
+        //System.out.println("occupancy: " + occupancy_);
         Item[] newArray = (Item[]) new Object[newSize];
 
         int current = head_;
@@ -102,7 +114,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
         head_ = 0;
         tail_ = occupancy_ - 1;
         array_ = newArray;
-        System.out.println("resizing from " + arraySize_ + " to " + newSize);
+        //System.out.println("resizing from " + arraySize_ + " to " + newSize);
         arraySize_ = newSize;
     }
 
@@ -170,7 +182,7 @@ public class RandomizedQueue<Item> implements Iterable<Item>
 
     public static void print(RandomizedQueue<Integer> q)
     {   
-        Iterator<Integer> it = q.iterator();
+        //Iterator<Integer> it = q.iterator();
 
         System.out.print("size: " + q.size() + " [ ");
         for(Integer s: q) {
